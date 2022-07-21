@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+</head>
+<style>
+    .title{
+        background-color: aqua;
+        width: 200px;
+    }
+</style>
+<body>
+    <div id="test"></div>
+    
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+    
+    <script type="text/babel">
+        const myId = 'whSHIgeHAORen'
+        const myData = 'hello,react'
+        const vDom = (
+            <div>
+                <h2 className='title' id={myId.toLowerCase()}>
+                    <span  style={{color:'white',fontSize:'29px'}}>{myData.toLowerCase()}</span>
+                </h2>
+                <h2 className='title' id={myId.toUpperCase()}>
+                    <span  style={{color:'white'}}>{myData.toLowerCase()}</span>
+                </h2>
+            </div>
+        )
+
+        ReactDOM.render(vDom,document.getElementById("test"))
+    </script>
+</body>
+</html>
