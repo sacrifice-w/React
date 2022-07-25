@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+</head>
+<body>
+    <div id="login"></div>
+    
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://unpkg.com/prop-types@15.6/prop-types.js"></script>
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+    
+    <script type="text/babel">
+        class Login extends React.Component {
+            handleSubmit = (event) => {
+                event.preventDefault(); //阻止默认事件
+                const {inputUser,inputPass} = this
+                alert(`您输入的用户名是：${inputUser.current.value}，您输入的密码是：${inputPass.current.value}`);
+            }
+
+            inputUser = React.createRef();
+            inputPass = React.createRef();
+            render() {
+                return (
+                    <form action="https://whcoding.cc" onSubmit={this.handleSubmit}>
+                        用户名：<input ref={this.inputUser} type="text" name='username'/>
+                        密码：<input ref={this.inputPass}type="password" name='password'/>
+                        <button>登录</button>
+                    </form>
+                );
+            }
+        }
+
+        ReactDOM.render(<Login />, document.getElementById("login"));
+    </script>
+</body>
+</html>

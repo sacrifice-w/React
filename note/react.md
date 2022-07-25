@@ -98,6 +98,17 @@ XML早期用于存储和传输数据
 1. 用来实现局部功能效果的代码和资源的集合（html/css/js/image等等）
 2. 通过组件化，可以复用编码，简化项目编码，提高运行效率
 
+## 2.5 jsx奇怪的注释方法
+jsx中写注释，平时没啥事儿，都是以`//`形式的，但是如果在一个有html结构的地方写注释就很奇怪了
+```js
+render() {
+    return (
+        <div>
+        {/* 就必须以这种方式写注释。也就是在注释外面包一个{}*/ }
+        </div>
+    );
+}
+```
 # 三、React面向组件编程
 ## 3.1 函数式组件
 ```js
@@ -277,6 +288,9 @@ let person3 = {...person, name:'tom'}; // {name:tom, age:20}
         // 因为age是一个数字类型，不能够使用''进行传入，只能够通过{}来传入
         ReactDOM.render(<Person name='haha' age={16}/>,document.getElementById('test2'));  //因为没有sex，会传入一个默认sex。
 ```
+需要注意的是，为了添加限制性语句，也就是`propTypes`类型的语句，必须添加下面的script标签。因为自从react15以来，就把这部分内容移出去了。
+需要单独进行调用。
+`<script src="https://unpkg.com/prop-types@15.6/prop-types.js"></script>`
 
 需要注意的是：props是**只读**的，不能**直接进行修改**
 #### 3.3.2.3 props简写
@@ -344,3 +358,170 @@ constructor(props){
         ReactDOM.render(<Person name='wh' age={18} sex='male'/>,document.getElementById('test'));
 ```
 因为函数能够传递参数，所以说能够使用props，但是不能使用state
+
+### 3.3.3 refs
+#### 3.3.3.1 字符串形式的ref
+```js
+        class Demo extends React.Component {
+            render() {
+                return (
+                    <div>
+                        <input type="text" placeholder='点击按钮提示数据' ref='input1'/>
+                        <button onClick={this.showData} ref='button'> 点击按钮显示数据</button>
+                        <input type="text" placeholder="失去焦点显示数据" ref='input2' onBlur={this.showData2}/>
+                    </div>
+                );
+            }
+            // 展示左侧输入框的数据
+            showData = () => {
+                // console.log(this.refs.input1);
+                const {input1}= this.refs;
+                alert(input1.value);
+            }
+            //展示右侧输入框的数据
+            showData2 = () => {
+                const {input2}= this.refs;
+                alert(input2.value);
+            }
+        }
+```
+组件内的标签可以定义ref属性来标识自己，和id类似
+ref的形式也是以key,value形式来进行的。
+key为ref的名字，value为具体的某个标签
+`<input type="text" placeholder='点击按钮提示数据' ref='input1'/>`
+
+**string类型的ref已经过时了**，可能未来会被移除掉。
+其存在一些效率上的问题。具体情况可以在github讨论区中看。
+
+#### 3.3.3.2 回调形式的ref
+```js
+        class Demo extends React.Component {
+            render() {
+                return (
+                    <div>
+                        <input type="text" ref = {currentNode => this.input1 = currentNode}/>
+                        <button onClick = {this.showInfo}>点击提示数据</button>
+                    </div>
+                );
+            }
+
+            showInfo = () => {
+                const {input1} = this;
+                alert(input1.value);
+            }
+        }
+```
+通过回调函数的形式也可以定义ref。`<input type="text" ref = {currentNode => this.input1 = currentNode}/>`
+但是如果ref回调函数是以**内联函数**的方式定义的，在**更新过程中**它会被执行两次，第一次传入参数null，然后第二次会传入参数DOM元素。
+但如果是不会更新的元素是没有影响的。因为render的执行次数是1+n次，第一次是没有影响的。只有第二次开始为更新，会产生影响。
+内联函数类似于：`<input ref = {(c) => {this.input = c; console.log(c);}}/>`
+**通过将ref的回调函数定义成class的绑定函数的方式可以避免上述问题**
+```js
+render() {
+    return (
+        <input type="text" ref = {this.saveInput}/>
+    );
+}
+saveInput(c){
+    this.input1 = c;
+}
+```
+#### 3.3.3.3 createRef
+```js
+        class Demo extends React.Component {
+            // React.createRef 调用后可以返回一个容器，该容器可以储存被ref所标识的节点
+            // 该容器是专人专用的
+            // 所以说每一次使用都得创建一个新的容器，好麻烦啊
+            myRef = React.createRef();
+            myRef2 = React.createRef();
+
+            render() {
+                return (
+                    <div>
+                        <input type="text" placeholder='HELLO' ref = {this.myRef}/>
+
+                        <button ref= {this.myRef2} onClick = {this.showData}>点击获取</button>
+                    </div>
+                );
+            }
+
+            showData = () => {
+                alert(this.myRef.current.value);
+            }
+        }
+```
+`React.createRef`每次只能存储一个节点，也就是说每一个标签想使用都需要创建一个单独的容器。
+
+
+**ref有一个很重要的点，就是不要过渡使用ref**
+
+#### 3.3.3.4 react的事件处理
+1. 通过onXxx属性指定事件处理函数（注意大小写）
+   1. React使用的是自定义(合成)事件，而不是使用的原生DOM事件 ————为了更好的兼容性
+   2. React中的事件是通过事件委托方式处理的(委托给组件最外层的元素) ————为了更高效
+2. 通过`event.target`得到发生事件的DOM元素对象 ———— 通过这种方式可以有效的减少ref的使用
+   1. 当需要处理的事件和需要添加的ref位于相同标签内时，可以省略ref，通过`event.target`来在事件内寻找所需的属性
+   
+## 3.5 收集表单数据
+### 3.5.1 受控组件
+页面中随着输入，不断更新和维护状态，就叫做受控组件。
+```js
+        class Login extends React.Component {
+            // 初始化状态
+            state = {
+                username: '',
+                password: ''
+            }
+            //储存用户名，将用户名维护到state中
+            saveUsername = (event) => {
+                console.log(event.target.value);
+                this.setState({username: event.target.value});
+            }
+            // 储存密码，将密码维护到state中
+            savePassword = (event) => {
+                console.log(event.target.value);
+                this.setState({password: event.target.value});
+            }
+            // 提交请求,通过维护的状态来选取
+            handleSubmit = (event) => {
+                event.preventDefault();
+                const {username, password} = this.state;
+                alert(`用户名为：${username}，密码为：${password}`);
+            }
+
+            render() {
+                return (
+                    <form action="https://whcoding.cc" onSubmit={this.handleSubmit}>
+                        用户名：<input type="text" name='username' onChange={this.saveUsername}/>
+                        密码：<input type="password" name='password' onChange={this.savePassword}/>
+                        <button>登录</button>
+                    </form>
+                );
+            }
+        }
+```
+
+受控组件比非受控组件更优秀一点,因为受控组件不使用ref,所以应该尽量使用受控组件来进行开发
+### 3.5.2 非受控组件
+页面中所有现用现取的组件就叫做非受控组件
+```js
+        class Login extends React.Component {
+            handleSubmit = (event) => {
+                event.preventDefault(); //阻止默认事件
+                const {inputUser,inputPass} = this
+                alert(`您输入的用户名是：${inputUser.current.value}，您输入的密码是：${inputPass.current.value}`);
+            }
+
+            inputUser = React.createRef();
+            inputPass = React.createRef();
+            render() {
+                return (
+                    <form action="https://whcoding.cc" onSubmit={this.handleSubmit}>
+                        用户名：<input ref={this.inputUser} type="text" name='username'/>
+                        密码：<input ref={this.inputPass}type="password" name='password'/>
+                        <button>登录</button>
+                    </form>
+                );
+            }
+        }
+```
