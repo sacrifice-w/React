@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title></title>
+	</head>
+	<body>
+		<div id="life"></div>
+
+		<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+		<script src="https://unpkg.com/prop-types@15.6/prop-types.js"></script>
+		<script
+			src="https://unpkg.com/react@16/umd/react.development.js"
+			crossorigin
+		></script>
+		<script
+			src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+			crossorigin
+		></script>
+
+		<script type="text/babel">
+			class Life extends React.Component {
+				state = { opacity: 1 };
+
+				death = () => {
+                    // 因为组件挂载之后，定时器一直存在，如果不在卸载组件时把定时器清除掉的话，那么就会导致把组件卸载后，定时器仍然存在，从而倒置bug
+                    // 清除定时器
+                    // clearInterval(this.timer);
+					// 卸载组件
+					ReactDOM.unmountComponentAtNode(document.getElementById("life"));
+				};
+
+                // 组件挂载之后，只执行一次
+				componentDidMount() {
+					this.timer = setInterval(() => {
+						let { opacity } = this.state;
+						opacity -= 0.1;
+						if (opacity <= 0) opacity = 1;
+						this.setState({ opacity });
+					}, 200);
+				}
+
+                // 组件将要卸载
+                componentWillUnmount() {
+                    // 在这里清除定时器也行
+                    clearInterval(this.timer);
+                }
+
+                // render调用的时机：初始化渲染，状态更新之后
+				render() {
+					return (
+						<div>
+							<h1 style={{ opacity: this.state.opacity }}>
+								React学不会怎么办？
+							</h1>
+							<button onClick={this.death}>不活了</button>
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<Life />, document.getElementById("life"));
+		</script>
+	</body>
+</html>
