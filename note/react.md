@@ -888,3 +888,76 @@ React17开始更新的了新的生命周期钩子函数，对旧版的钩子函�
             }
         }
 ```
+### 3.7.2 总结
+1. 初始化阶段： 由ReactDOM.render()触发 ——————初次渲染
+   1. constructor()
+   2. getDerivedStateFromProps
+   3. render()
+   4. componentDidMount()
+2. 更新阶段：由组件内部this.setState()或父组件重新render触发
+   1. getDerivedStateFromProps
+   2. shouldComponentUpdate()
+   3. render()
+   4. getSnapshotBeforeUpdate
+   5. componentDidUpdate()
+3. 卸载组件：由ReactDOM.unmountComponentAtNode()触发
+   1. componentWillUnmount()
+4. **重要的钩子：**
+   1. render：初始化渲染或更新渲染调用
+   2. componentDidMount()：开启监听，发送ajax请求
+   3. componentWillUnmount()：做一些收尾工作，如：清理定时器
+5. **即将废弃的钩子：**
+   1. componentWillMount
+   2. componentWillReceiveProps
+   3. componentWillUpdate
+   4. 这三个钩子未来可能会被弃用，现在使用也得加上**UNSAFE_前缀**才能使用
+
+## 3.8 DOM的diffing算法
+### 3.8.1 Diffing算法
+最小力度是标签。也就是在每次更新虚拟DOM时，不会更新没有改变的标签，只会更新发生变化标签。
+标签里面套标签的话，如果里面的标签没有变化，是不会动的。
+### 3.8.2 key的作用
+问：1.React中的key有什么作用？（key的内部原理是什么？）
+	2.为什么遍历列表时，key最好不要用index？
+
+答：
+1. 虚拟DOM中key的作用：
+   1. 简单的说：key是虚拟DOM对象的标识，在更新显示时key起着极其重要的作用
+   2. 详细的说：当状态中的数据发生变化时，react会根据【新数据】生成【新的虚拟DOM】，随后React进行【新虚拟DOM】和【旧虚拟DOM】的diff比较，规则如下：
+      1. 就虚拟DOM中找到了与新虚拟DOM相同的key：
+         1. 若虚拟DOM中内容没变，直接使用之前的真实DOM
+         2. 若虚拟DOM中内容变了，则生成新的真实DOM，随后替换掉页面中之前的真实DOM
+      2. 旧虚拟DOM中未找到与新虚拟DOM相同的key：
+         1. 根据数据创建新的真实DOM，随后渲染到页面
+2. 使用index作为key，可能会引发的问题：
+   1. 若对数据进行：逆序添加、逆序删除等破坏性操作：会产生没有必要的真实DOM更新 ==>界面效果没问题，但是效率低
+   2. 如果结构中还包含输入类的DOM：会产生错误DOM更新 ==>界面有问题
+   3. 如果不存在对数据的逆序添加，逆序删除等破坏顺序操作，仅用于渲染列表用于展示，使用index作为key是没有问题的。
+3. 开发中如何选择key：
+   1. 最好使用每条数据的唯一标识作为key，比如：ID,手机号、身份证号、学号等唯一值
+   2. 如果确定只是简单的展示数据，用index也是可以的。
+
+
+如果使用index作为key：
+```
+初始数据：
+{id:0,name:'ww',age:18},
+{id:1,name:'xx',age:19},
+
+初始的虚拟DOM:
+<li key=0>ww---18</li>
+<li key=1>xx---19</li>
+
+更新了一个新数据：
+{id:2,name:'zz',age:20},
+{id:0,name:'ww',age:18},
+{id:1,name:'xx',age:19},
+
+更新后的虚拟DOM：
+<li key=0>zz---20</li>
+<li key=1>ww---18</li>
+<li key=2>xx---19</li>
+```
+本来是只需要更新一条数据，但是因为index的问题，导致必须三个数据都转换。使得效率降低咧。
+如果数据量很大，那么就会导致问题很严重。**严重降低效率**
+**所以说，应该使用id（数据的唯一标识）来当做索引值**
