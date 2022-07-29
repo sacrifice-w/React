@@ -63,3 +63,5 @@ Run `npm audit` for details.
    4. `<React.StrictMode> <App /> </React.StrictMode>`这个的目的是检查App组件，会提醒一些写的不合理的东西
    5. reportWebVital.js是做页面性能检测的
    6. setupTests.js是做组件检测的
+4. 主要编写的内容就是public/index.html和src/App.js和src/index.js
+
