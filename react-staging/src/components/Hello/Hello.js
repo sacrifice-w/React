@@ -3,9 +3,9 @@ import './Hello.css'
 export default class Hello extends Component {
     render() {
         return (
-            <div className='title'>
+            <h2 className='title'>
                 Hello,react!
-            </div>
+            </h2>
         );
     }
 }

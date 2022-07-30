@@ -65,3 +65,68 @@ Run `npm audit` for details.
    6. setupTests.js是做组件检测的
 4. 主要编写的内容就是public/index.html和src/App.js和src/index.js
 
+# 二、脚手架学习
+## 2.1 基本内容的编写
+首先是`public/index,html`，因为这部分只负责引入一个用于渲染的节点。所以内容比较简单。
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello-React</title>
+</head>
+<body>
+    <div id="root"></div>
+</body>
+</html>
+```
+其次是`src/App.js`，这部分是组件的主要内容,也是组件最后汇总的地方
+```js
+// 创建“外壳”组件
+import React,{Component} from 'react'
+// 引用，但是js后缀可以省略
+import Hello from './components/Hello/Hello.js'
+// 省略型引用
+import Welcome from './components/Welcome'
+
+// 创建并暴露App组件
+export default class App extends Component{
+    render() {
+        return (
+            <div>
+                <Hello />
+                <Welcome />
+            </div>
+        );
+    }
+}
+```
+通过引入两个子组件来完成组件的设置。子组件的引用有两种方式，一种是通过直接引用。另一种是如果文件夹中的js/jsx文件命名为index.js，则可以省略。
+并通过暴露这个App组件使得能被index.js调用
+`src/index.js`主要负责的就是渲染组件到页面上。
+```js
+// 引入库
+import React from 'react'
+import ReactDOM from 'react-dom'
+import App from './App'
+
+// 渲染
+ReactDOM.render(<App />, document.getElementById('root'));
+
+```
+子组件以`Hello.js`为例：
+```js
+import React,{Component} from 'react';
+import './Hello.css'
+export default class Hello extends Component {
+    render() {
+        return (
+            <h2 className='title'>
+                Hello,react!
+            </h2>
+        );
+    }
+}
+```
