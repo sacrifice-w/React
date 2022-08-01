@@ -130,3 +130,51 @@ export default class Hello extends Component {
     }
 }
 ```
+## 2.2 样式的模块化
+```js
+import React,{Component} from 'react';
+import hello from'./Hello.module.css'
+export default class Hello extends Component {
+    render() {
+        return (
+            <h2 className={hello.title}>
+                Hello,react!
+            </h2>
+        );
+    }
+}
+```
+通过给css文件命名为`xxx.module.css`来将样式文件进行模块化。之后就能在js文件中进行import调用了。
+在下面的样式引用时，可以通过调用`className={hello.title}`这种类型来进行样式的调用。
+
+## 2.3 vscode中的React插件
+`ES7+ React/Redux/React-Native snippets`
+提供rcc/rfc/等快捷键
+`React Native Tools`
+提供ren等快捷键0
+`React Style Helper`
+
+比较推荐这三个插件。-.-
+
+## 2.5 组件化编码流程
+1. 拆分组件：拆分界面，抽取组件
+2. 实现静态组件：使用组件实现静态页面效果
+3. 实现动态组件
+   1. 动态显示初始化数据
+      1. 数据类型
+      2. 数据名称
+      3. 保存在哪个组件
+   2. 交互（从绑定事件监听开始）
+
+## 2.6 React18的一些新特性
+`ReactDOM.render`在React18中被废弃了，取而代之的是`createRoot render`
+现在需要首先提取出这个节点，在这个节点上使用createRoot方法，之后在将其渲染。
+```js
+// 渲染
+const container = document.getElementById('root');
+// Create a root.
+const root = ReactDOM.createRoot(container);
+// Initial render: Render an element to the root.
+root.render(<App />);
+```
+并且需要注意的是：`import ReactDOM from 'react-dom/client'`引用改成了这种形式。
