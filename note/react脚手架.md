@@ -140,6 +140,22 @@ export default class Hello extends Component {
 }
 ```
 
+### 2.1.1 React18 的一些新特性
+
+`ReactDOM.render`在 React18 中被废弃了，取而代之的是`createRoot render`
+现在需要首先提取出这个节点，在这个节点上使用 createRoot 方法，之后在将其渲染。
+
+```js
+// 渲染
+const container = document.getElementById("root");
+// Create a root.
+const root = ReactDOM.createRoot(container);
+// Initial render: Render an element to the root.
+root.render(<App />);
+```
+
+并且需要注意的是：`import ReactDOM from 'react-dom/client'`引用改成了这种形式。
+
 ## 2.2 样式的模块化
 
 ```js
@@ -175,22 +191,6 @@ export default class Hello extends Component {
       2. 数据名称
       3. 保存在哪个组件
    2. 交互（从绑定事件监听开始）
-
-## 2.6 React18 的一些新特性
-
-`ReactDOM.render`在 React18 中被废弃了，取而代之的是`createRoot render`
-现在需要首先提取出这个节点，在这个节点上使用 createRoot 方法，之后在将其渲染。
-
-```js
-// 渲染
-const container = document.getElementById("root");
-// Create a root.
-const root = ReactDOM.createRoot(container);
-// Initial render: Render an element to the root.
-root.render(<App />);
-```
-
-并且需要注意的是：`import ReactDOM from 'react-dom/client'`引用改成了这种形式。
 
 # 三、react ajax
 
@@ -326,3 +326,98 @@ const xxx = async () => {
 	}
 };
 ```
+
+# 四、React路由
+## 4.1 相关理解
+### 4.1.1 SPA
+1. 单页web应用（single page web application，SPA）
+2. 整个应用只有**一个完整的页面**
+3. 点击页面中的链接**不会刷新**页面，只会做页面的**局部更新**
+4. 数据都需要通过ajax请求获取，并在前端异步展现
+
+### 4.1.2 路由(Route)
+1. 什么是路由？
+   1. 一个路由是一个映射关系(key:value)
+   2. key为路径(path)，value可能是function或是component
+2. 路由的种类：
+   1. 后端路由：
+      1. 理解：value为function，用来处理客户端提交的请求
+      2. 注册路由：router.get(path,function(req,res))
+      3. 工作过程：当node接收到一个请求时，根据请求路径找到匹配的路由，调用路由中的函数来处理请求，返回响应函数
+   2. 前端路由：
+      1. 浏览器端路由，value是component，用于展示页面内容
+      2. 注册路由：`<Route path='/test component={Test}'>`
+      3. 工作过程：当浏览器的path变为/test时，当前路由组件就会变成Test组件
+3. 浏览器的历史记录是以栈的形式存在的，当浏览一条记录时，将这条记录压入栈中，当回退时，将当前记录出栈，则暴露了上一条记录。
+
+## 4.2 history
+1. 使用H5推出的history身上的api来操纵历史记录的前进和后退等
+```js
+let history = History.createBrowserHistory();
+
+function push(path) {
+	history.push(path);
+}
+
+function replace(path) {
+	history.replace(path);
+}
+
+function back() {
+	history.goBack();
+}
+
+function forward() {
+	history.goForward();
+
+}
+```
+
+2. 使用hash值(锚点)来操纵`let history = History.createHarshHistory()`
+
+## 4.3 react-router
+1. react的一个插件库
+2. 专门用来实现一个SPA应用
+3. 共分为三部分，分别给web、native、any使用
+4. 前端使用的主要是react-router-dom
+5. 下载：`npm i react-router-dom`
+### 4.3.1 一级路由
+首先下载并引入路由，在index.js中通过BrowserRouter对App组件进行包裹，这意味着进行了路由的包裹
+```js
+// 引入库
+// 从 react-dom/client 引入 ReactDOM
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
+import App from './App'
+
+// React 18 的语法发生改变了
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <BrowserRouter>
+        <App />
+    </BrowserRouter>
+)
+```
+之后在App.js中进行路由链接和注册路由
+```js
+import React from 'react'
+import {NavLink,Routes,Route} from 'react-router-dom'
+import Home from './components/Home'
+import About from './components/About'
+
+<div className="list-group">
+    {/* 路由链接 */}
+    <NavLink className="list-group-item" to="/about">About</NavLink>
+    <NavLink className="list-group-item" to="/home">Home</NavLink>
+</div>
+
+{/* 注册路由 */}
+<Routes>
+    <Route path='/about' element={<About/>} />
+    <Route path='/home' element={<Home/>} />
+</Routes>
+```
+Routes用于对注册路由的组件进行包裹。
+而Route组件的格式为固定的`<Route path='/about' element={<About/>} />`，其中path前面最好不要加`.`。因为可能会出现格式加载的问题。element里面是引用的组件。
+
+原生html中，靠`<a>`来跳转不同的页面。在React中靠路由链接实现切换组件
