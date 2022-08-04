@@ -1,9 +1,9 @@
 import React from 'react'
-import {NavLink,Routes,Route} from 'react-router-dom'
-import Home from './components/Home'
-import About from './components/About'
+import {NavLink,useRoutes} from 'react-router-dom'
+import routes from './routes'
 
 export default function App() {
+    const element = useRoutes(routes)
     return (
         <div>
             <div className="row">
@@ -23,10 +23,7 @@ export default function App() {
                     <div className="panel">
                         <div className="panel-body">
                             {/* 注册路由 */}
-                            <Routes>
-                                <Route path='/about' element={<About/>} />
-                                <Route path='/home' element={<Home/>} />
-                            </Routes>
+                            {element}
                         </div>
                     </div>
                 </div>

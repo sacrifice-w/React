@@ -381,8 +381,10 @@ function forward() {
 3. 共分为三部分，分别给web、native、any使用
 4. 前端使用的主要是react-router-dom
 5. 下载：`npm i react-router-dom`
+6. 引入css文件时要注意不要加`.`。应该使用`<link rel="stylesheet" href="/bootstrap.css">`或者用%形式写也行。负责会出现**样式丢失**的问题。
 ### 4.3.1 一级路由
-首先下载并引入路由，在index.js中通过BrowserRouter对App组件进行包裹，这意味着进行了路由的包裹
+首先下载并引入路由，在index.js中通过BrowserRouter/HashRouter对App组件进行包裹，这意味着进行了路由的包裹
+但是HashRouter传递的path为`localhost:3000/#/....`，#后面的参数都不会给服务器传递。所以最好还是用`BrowserRouter`
 ```js
 // 引入库
 // 从 react-dom/client 引入 ReactDOM
@@ -417,7 +419,98 @@ import About from './components/About'
     <Route path='/home' element={<Home/>} />
 </Routes>
 ```
-Routes用于对注册路由的组件进行包裹。
-而Route组件的格式为固定的`<Route path='/about' element={<About/>} />`，其中path前面最好不要加`.`。因为可能会出现格式加载的问题。element里面是引用的组件。
+1. 路由链接：
+	1. 原生html中，靠`<a>`来跳转不同的页面。在React中靠路由链接实现切换组件`<NavLink className="list-group-item" to="/about">About</NavLink>`
+	2. 或者是`<Link className="list-group-item" to="/about">About</Link>`。
+	3. 需要注意的是，to后面跟的路径不能带`.`
+	4. NavLink默认会给链接添加一个active属性。或者可以添加一个属性`activeClassName = ''`从而对点击的链接添加一个独特的属性。
+```js
+	<BrowserRouter>
+		<Link className="list-group-item" to="/about">About</Link>
+	</BrowserRouter>
+```
+2. 注册路由：
+   1. `<Routes>`用于对注册路由的组件进行包裹。当url变化时，`<Routes>`会查看所有子`<Route>`元素以找到最佳匹配并呈现组件
+   2. 而`<Route>`组件的格式为固定的`<Route path='/about' element={<About/>} />`，其中path前面不要加`.`。因为可能会出现格式加载的问题。element里面是引用的组件。
+   3. `<Routes>`和`<Route>`要配合使用，且必须用`<Routes>`包裹`<Route>`
+   4. `<Route>`相当于一个if语句，如果其路径与当前url匹配，则呈现对应的组件
+   5. `<Route caseSensitive>`属性用于指定匹配时是否区分大小写（默认为false）
 
-原生html中，靠`<a>`来跳转不同的页面。在React中靠路由链接实现切换组件
+3. 路由组件和一般组件的区别：
+   1. 接收到的props不同：路由组件的props传递了三组固定的属性（history、location、match），一般组件的props为传递的东西
+   2. 写法不同：路由组件需要通过路由器进行渲染(`<Route path='/home' element={<Home/>} />`)，一般组件是直接进行渲染(`<Demo/>`)
+   3. 位置不同：一般组件位于components文件夹，路由组件位于pages文件夹
+
+### 4.3.2 封装NavLink组件
+```js
+import React,{ Component } from 'react';
+import {NavLink} from 'react-router-dom'
+
+export default class MyNavLink extends Component {
+	render() {
+		return (
+			<NavLink activeClassName='xxx' className='xx' {this.props}/>
+		);
+	}
+}
+```
+
+这样将其封装成一个一般组件，之后调用NavLink时就可以简单的调用咧。`<MyNavLink to='xxx' />`
+
+### 4.3.3 重定向
+使用`<Navigate>`组件可以完成重定向，其只要被渲染，就会修改路径，切换视图。
+其可以添加replace属性，默认为push。如果`replace={true}`则为replace模式
+```js
+import React from 'react'
+import {Navigate} from'react-router-dom'
+
+export default function Home() {
+	const [sum,setSum ] = useState(1)
+  return (
+	<div>
+		<h3>Home</h3>
+		{sum ===1 ? <h4>sum的值为{sum}</h4> : <Navigate to = '/about' replace= {true}>}
+		<button onClick={() => setSum(2)}>点我将sum变为2</button>
+	</div>
+  )
+}
+```
+
+### 4.3.4 路由表
+通过useRoutes使用路由表
+首先在./src中建立一个routes文件夹用于存放路由规则。
+```js
+import React from 'react'
+import About from '../pages/About'
+import Home from '../pages/Home'
+import {Navigate} from 'react-router-dom'
+
+
+export default [
+    {
+        path: '/about',
+        element: <About />
+    },
+    {
+        path: '/home',
+        element: <Home />
+    },
+    {
+        path: '/',
+        element: <Navigate to='/about' />
+    },
+]
+```
+在这个路由规则文件中调用组件和其他，并将路由规则通过数组形式暴露出去。
+之后在App中引用这个文件，使用useRoutes来调用这些规则，之后在返回时，就可以方便的调用这些组件了。
+```js
+import {NavLink,useRoutes} from 'react-router-dom'
+import routes from './routes'
+
+export default function App() {
+	const element = useRoutes(routes)
+	return{
+		{element}
+	}
+}
+```
