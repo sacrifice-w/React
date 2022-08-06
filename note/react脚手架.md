@@ -915,3 +915,45 @@ npx create-react-app my-app --template redux-typescript
 可以通过node或者js放到服务器上打包
 或者通过serve库来打包项目`npm i serve -g`。其的作用就是快速开启一台服务器
 之后执行命令`serve build`来快速上线一个项目。当然这只是本地的一种简易方法，真实部署项目还是需要通过正经途径来滴。
+
+# 八、react扩展内容
+## 8.1 setState的两种方式
+```js
+import React, { Component } from 'react'
+
+export default class Count extends Component {
+    state = {count: 0};
+    add = () => {
+        const {count} = this.state;
+
+        // 对象式的setState
+        // this.setState({count: count + 1},()=>{
+        //     console.log(this.state.count);
+        // });
+
+        // 函数式的setState
+        this.setState((state,props)=>{
+            return {count : state.count +1}
+        })
+    }
+    render() {
+        return (
+            <div>
+                <h1>当前求和为：{this.state.count}</h1>
+                <button onClick = {this.add}>点我加一</button>
+            </div>
+        )}
+}
+```
+1. `setState(stateChange,[callback])`————对象式的setState
+   1. stateChange为状态改变对象（该对象可以体现出状态的更改）
+   2. callback是可选的回调函数，它在状态更新完毕，界面也更新后（render调用后）才被调用
+   3. 因为setState是异步的，所以如果想在外部查看最新的值可能会失败，所以说如果想要查看最新的值或者进行什么操作应该写在回调函数里
+2. `setState(updater,[callback])`————函数式的setState
+   1. updater为返回stateChange对象的函数
+   2. updater可以接收到state和props
+   3. callback是可选的回调函数，它在状态更新、界面更新后才被调用
+3. 总结：
+   1. 对象式的setState是函数式的setState的简写方式（语法糖）
+   2. 如果新状态不依赖于原状态=>使用对象方式
+   3. 如果新状态依赖于原状态=>使用函数方式
