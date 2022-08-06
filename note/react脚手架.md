@@ -864,3 +864,54 @@ pathname: '/user'
 search: '?id=001&name=Bruce'
 */
 ```
+
+# 五、React UI组件库
+## 5.1 material-ui
+官网：http://www.material-ui.com
+## 5.2 ant-design
+官网：https://ant.design/index-cn
+
+## 5.3 使用antd
+下载`npm i antd`
+感觉具体用法直接看官方文档用就完事了
+
+要是需要暴露脚手架内容从而引用需要的antd样式。需要先使用eject将脚手架暴露，之后通过`react-app-rewired`和`customize-cra`来修改文件。
+具体内容看官方文档吧
+
+并且可以自定义主题
+
+# 六、redux
+## 6.1 redux理解
+官方文档：https://redux.js.org/
+中文文档：http://www.redux.org.cn/
+### 6.1.1 redux是什么
+1. redux是一个专门用于做**状态管理**的js库(不是react插件库)
+2. 可以在react、angular、vue等项目中，但基本使用与react中
+3. 作用：集中式管理react应用中多个组件共享的状态
+
+### 6.1.2 什么情况下需要使用redux
+1. 某个组件的状态，需要让其他组件可以随时拿到(共享)
+2. 一个组件需要改变另一个组件的状态(通信)
+3. 总体原则：能不用就不用，如果不用比较吃力才考虑使用
+
+## 6.2 工作流程
+![redux](./../img/redux原理图.png)
+## 6.3 redux使用
+下载：`npm install --save redux`
+现在官方推荐使用Redux Toolkit使用redux
+官方文档：https://redux-toolkit.js.org/
+下载方式：`npm install @reduxjs/toolkit`
+或者可以使用 React 和 Redux 启动新应用程序的推荐方法是使用官方 Redux+JS 模板或Redux+TS 模板来创建 React App，它利用了Redux Toolkit和 React Redux 与 React 组件的集成。
+```
+# Redux + Plain JS template
+npx create-react-app my-app --template redux
+
+# Redux + TypeScript template
+npx create-react-app my-app --template redux-typescript
+```
+
+# 七、 项目打包
+首先执行`npm run build`，此时会生成一个build目录
+可以通过node或者js放到服务器上打包
+或者通过serve库来打包项目`npm i serve -g`。其的作用就是快速开启一台服务器
+之后执行命令`serve build`来快速上线一个项目。当然这只是本地的一种简易方法，真实部署项目还是需要通过正经途径来滴。
