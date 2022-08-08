@@ -4,11 +4,6 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 
 // React 18 的语法发生改变了
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-
-root.render(
-    <App/>
-);
-
-export default root;
+ReactDOM.createRoot(document.getElementById('root')).render(
+        <App />
+)

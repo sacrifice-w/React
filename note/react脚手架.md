@@ -42,6 +42,8 @@ Run `npm audit` for details.
 
 之后在安装完成后，进入已经创建好的项目目录，`npm start`启动项目。
 
+**在使用包管理器时，需要注意，在一个项目中只使用一个包管理器，比如只使用 npm 或者只使用 yarn。尽量不要使用多个包管理器，否则可能会出现未知问题**
+
 ## 1.3 内容
 
 1. node_modules 存放脚手架所需的依赖
@@ -292,7 +294,7 @@ componentWillUnmount(){
 
 特点：
 
-1. 原生函数，和 xhr 是并列的。不使用xhr提交ajax请求
+1. 原生函数，和 xhr 是并列的。不使用 xhr 提交 ajax 请求
 2. 老版本浏览器可能不支持
 
 xhr 不符合关注分离的原则。
@@ -327,31 +329,37 @@ const xxx = async () => {
 };
 ```
 
-# 四、React路由
+# 四、React 路由
+
 ## 4.1 相关理解
+
 ### 4.1.1 SPA
-1. 单页web应用（single page web application，SPA）
+
+1. 单页 web 应用（single page web application，SPA）
 2. 整个应用只有**一个完整的页面**
 3. 点击页面中的链接**不会刷新**页面，只会做页面的**局部更新**
-4. 数据都需要通过ajax请求获取，并在前端异步展现
+4. 数据都需要通过 ajax 请求获取，并在前端异步展现
 
 ### 4.1.2 路由(Route)
+
 1. 什么是路由？
    1. 一个路由是一个映射关系(key:value)
-   2. key为路径(path)，value可能是function或是component
+   2. key 为路径(path)，value 可能是 function 或是 component
 2. 路由的种类：
    1. 后端路由：
-      1. 理解：value为function，用来处理客户端提交的请求
+      1. 理解：value 为 function，用来处理客户端提交的请求
       2. 注册路由：router.get(path,function(req,res))
-      3. 工作过程：当node接收到一个请求时，根据请求路径找到匹配的路由，调用路由中的函数来处理请求，返回响应函数
+      3. 工作过程：当 node 接收到一个请求时，根据请求路径找到匹配的路由，调用路由中的函数来处理请求，返回响应函数
    2. 前端路由：
-      1. 浏览器端路由，value是component，用于展示页面内容
+      1. 浏览器端路由，value 是 component，用于展示页面内容
       2. 注册路由：`<Route path='/test component={Test}'>`
-      3. 工作过程：当浏览器的path变为/test时，当前路由组件就会变成Test组件
+      3. 工作过程：当浏览器的 path 变为/test 时，当前路由组件就会变成 Test 组件
 3. 浏览器的历史记录是以栈的形式存在的，当浏览一条记录时，将这条记录压入栈中，当回退时，将当前记录出栈，则暴露了上一条记录。
 
 ## 4.2 history
-1. 使用H5推出的history身上的api来操纵历史记录的前进和后退等
+
+1. 使用 H5 推出的 history 身上的 api 来操纵历史记录的前进和后退等
+
 ```js
 let history = History.createBrowserHistory();
 
@@ -369,84 +377,102 @@ function back() {
 
 function forward() {
 	history.goForward();
-
 }
 ```
 
-2. 使用hash值(锚点)来操纵`let history = History.createHarshHistory()`
+2. 使用 hash 值(锚点)来操纵`let history = History.createHarshHistory()`
 
 ## 4.3 react-router
-1. react的一个插件库
-2. 专门用来实现一个SPA应用
-3. 共分为三部分，分别给web、native、any使用
-4. 前端使用的主要是react-router-dom
+
+1. react 的一个插件库
+2. 专门用来实现一个 SPA 应用
+3. 共分为三部分，分别给 web、native、any 使用
+4. 前端使用的主要是 react-router-dom
 5. 下载：`npm i react-router-dom`
-6. 引入css文件时要注意不要加`.`。应该使用`<link rel="stylesheet" href="/bootstrap.css">`或者用%形式写也行。负责会出现**样式丢失**的问题。
+6. 引入 css 文件时要注意不要加`.`。应该使用`<link rel="stylesheet" href="/bootstrap.css">`或者用%形式写也行。负责会出现**样式丢失**的问题。
 7. 与 React Router 5.x 版本的区别：
-	- 内置组件的变化：移除`<Switch/>`，新增`<Routes/>`……
-	- 语法变化：`component={About}`变成`element={<About/>}`……
-	- 新增 hook：useParams、useNavigate、useMatch……
-	- 官方明确表示推荐使用函数式组件
+   - 内置组件的变化：移除`<Switch/>`，新增`<Routes/>`……
+   - 语法变化：`component={About}`变成`element={<About/>}`……
+   - 新增 hook：useParams、useNavigate、useMatch……
+   - 官方明确表示推荐使用函数式组件
+
 ### 4.3.1 一级路由
-首先下载并引入路由，在index.js中通过BrowserRouter/HashRouter对App组件进行包裹，这意味着进行了路由的包裹
-但是HashRouter传递的path为`localhost:3000/#/....`，#后面的参数都不会给服务器传递。所以最好还是用`BrowserRouter`
+
+首先下载并引入路由，在 index.js 中通过 BrowserRouter/HashRouter 对 App 组件进行包裹，这意味着进行了路由的包裹
+但是 HashRouter 传递的 path 为`localhost:3000/#/....`，#后面的参数都不会给服务器传递。所以最好还是用`BrowserRouter`
+
 ```js
 // 引入库
 // 从 react-dom/client 引入 ReactDOM
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom'
-import App from './App'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App";
 
 // React 18 的语法发生改变了
-ReactDOM.createRoot(document.getElementById('root')).render(
-    <BrowserRouter>
-        <App />
-    </BrowserRouter>
-)
+ReactDOM.createRoot(document.getElementById("root")).render(
+	<BrowserRouter>
+		<App />
+	</BrowserRouter>
+);
 ```
-之后在App.js中进行路由链接和注册路由
+
+之后在 App.js 中进行路由链接和注册路由
+
 ```js
-import React from 'react'
-import {NavLink,Routes,Route} from 'react-router-dom'
-import Home from './components/Home'
-import About from './components/About'
+import React from "react";
+import { NavLink, Routes, Route } from "react-router-dom";
+import Home from "./components/Home";
+import About from "./components/About";
 
 <div className="list-group">
-    {/* 路由链接 */}
-    <NavLink className="list-group-item" to="/about">About</NavLink>
-    <NavLink className="list-group-item" to="/home">Home</NavLink>
-</div>
+	{/* 路由链接 */}
+	<NavLink className="list-group-item" to="/about">
+		About
+	</NavLink>
+	<NavLink className="list-group-item" to="/home">
+		Home
+	</NavLink>
+</div>;
 
-{/* 注册路由 */}
+{
+	/* 注册路由 */
+}
 <Routes>
-    <Route path='/about' element={<About/>} />
-    <Route path='/home' element={<Home/>} />
-</Routes>
+	<Route path="/about" element={<About />} />
+	<Route path="/home" element={<Home />} />
+</Routes>;
 ```
+
 1. 路由链接：
-	1. 原生html中，靠`<a>`来跳转不同的页面。在React中靠路由链接实现切换组件`<NavLink className="list-group-item" to="/about">About</NavLink>`
-	2. 或者是`<Link className="list-group-item" to="/about">About</Link>`。
-	3. 需要注意的是，to后面跟的路径不能带`.`
-	4. NavLink默认会给链接添加一个active属性。或者可以添加一个属性`activeClassName = ''`从而对点击的链接添加一个独特的属性。
+   1. 原生 html 中，靠`<a>`来跳转不同的页面。在 React 中靠路由链接实现切换组件`<NavLink className="list-group-item" to="/about">About</NavLink>`
+   2. 或者是`<Link className="list-group-item" to="/about">About</Link>`。
+   3. 需要注意的是，to 后面跟的路径不能带`.`
+   4. NavLink 默认会给链接添加一个 active 属性。或者可以添加一个属性`activeClassName = ''`从而对点击的链接添加一个独特的属性。
+
 ```js
-	<BrowserRouter>
-		<Link className="list-group-item" to="/about">About</Link>
-	</BrowserRouter>
+<BrowserRouter>
+	<Link className="list-group-item" to="/about">
+		About
+	</Link>
+</BrowserRouter>
 ```
+
 2. 注册路由：
-   1. `<Routes>`用于对注册路由的组件进行包裹。当url变化时，`<Routes>`会查看所有子`<Route>`元素以找到最佳匹配并呈现组件
-   2. 而`<Route>`组件的格式为固定的`<Route path='/about' element={<About/>} />`，其中path前面不要加`.`。因为可能会出现格式加载的问题。element里面是引用的组件。
+
+   1. `<Routes>`用于对注册路由的组件进行包裹。当 url 变化时，`<Routes>`会查看所有子`<Route>`元素以找到最佳匹配并呈现组件
+   2. 而`<Route>`组件的格式为固定的`<Route path='/about' element={<About/>} />`，其中 path 前面不要加`.`。因为可能会出现格式加载的问题。element 里面是引用的组件。
    3. `<Routes>`和`<Route>`要配合使用，且必须用`<Routes>`包裹`<Route>`
-   4. `<Route>`相当于一个if语句，如果其路径与当前url匹配，则呈现对应的组件
-   5. `<Route caseSensitive>`属性用于指定匹配时是否区分大小写（默认为false）
+   4. `<Route>`相当于一个 if 语句，如果其路径与当前 url 匹配，则呈现对应的组件
+   5. `<Route caseSensitive>`属性用于指定匹配时是否区分大小写（默认为 false）
 
 3. 路由组件和一般组件的区别：
-   1. 接收到的props不同：路由组件的props传递了三组固定的属性（history、location、match），一般组件的props为传递的东西
+   1. 接收到的 props 不同：路由组件的 props 传递了三组固定的属性（history、location、match），一般组件的 props 为传递的东西
    2. 写法不同：路由组件需要通过路由器进行渲染(`<Route path='/home' element={<Home/>} />`)，一般组件是直接进行渲染(`<Demo/>`)
-   3. 位置不同：一般组件位于components文件夹，路由组件位于pages文件夹
+   3. 位置不同：一般组件位于 components 文件夹，路由组件位于 pages 文件夹
 
-### 4.3.2 封装NavLink组件
+### 4.3.2 封装 NavLink 组件
+
 ```js
 import React,{ Component } from 'react';
 import {NavLink} from 'react-router-dom'
@@ -460,11 +486,13 @@ export default class MyNavLink extends Component {
 }
 ```
 
-这样将其封装成一个一般组件，之后调用NavLink时就可以简单的调用咧。`<MyNavLink to='xxx' />`
+这样将其封装成一个一般组件，之后调用 NavLink 时就可以简单的调用咧。`<MyNavLink to='xxx' />`
 
 ### 4.3.3 重定向
+
 使用`<Navigate>`组件可以完成重定向，其只要被渲染，就会修改路径，切换视图。
-其可以添加replace属性，默认为push。如果`replace={true}`则为replace模式
+其可以添加 replace 属性，默认为 push。如果`replace={true}`则为 replace 模式
+
 ```js
 import React from 'react'
 import {Navigate} from'react-router-dom'
@@ -482,32 +510,35 @@ export default function Home() {
 ```
 
 ### 4.3.4 路由表
-通过useRoutes使用路由表
-首先在./src中建立一个routes文件夹用于存放路由规则。
-```js
-import React from 'react'
-import About from '../pages/About'
-import Home from '../pages/Home'
-import {Navigate} from 'react-router-dom'
 
+通过 useRoutes 使用路由表
+首先在./src 中建立一个 routes 文件夹用于存放路由规则。
+
+```js
+import React from "react";
+import About from "../pages/About";
+import Home from "../pages/Home";
+import { Navigate } from "react-router-dom";
 
 export default [
-    {
-        path: '/about',
-        element: <About />
-    },
-    {
-        path: '/home',
-        element: <Home />
-    },
-    {
-        path: '/',
-        element: <Navigate to='/about' />
-    },
-]
+	{
+		path: "/about",
+		element: <About />,
+	},
+	{
+		path: "/home",
+		element: <Home />,
+	},
+	{
+		path: "/",
+		element: <Navigate to="/about" />,
+	},
+];
 ```
+
 在这个路由规则文件中调用组件和其他，并将路由规则通过数组形式暴露出去。
-之后在App中引用这个文件，使用useRoutes来调用这些规则，之后在返回时，就可以方便的调用这些组件了。
+之后在 App 中引用这个文件，使用 useRoutes 来调用这些规则，之后在返回时，就可以方便的调用这些组件了。
+
 ```js
 import {NavLink,useRoutes} from 'react-router-dom'
 import routes from './routes'
@@ -521,209 +552,243 @@ export default function App() {
 ```
 
 ### 4.3.5 嵌套路由
+
 嵌套路由中，需要使用`<Outlet>`设置子路由的路由出口，即在何处渲染子路由。
 设置二级路由链接时，可以是 to="news"、to="./news"，但不能是 to="/news"。
 不使用路由表的嵌套路由：
+
 ```js
 // App.js
 export default function App() {
-  return (
-    <div>
-      <NavLink to="about">About</NavLink>
-      <NavLink to="hello">Hello</NavLink>
-      <hr />
-      <Routes>
-        <Route path="about" element={<About />} />
-        <Route path="hello" element={<Hello />}>
-          <Route path="news" element={<News />} />
-          <Route path="message" element={<Message />} />
-        </Route>
-        <Route path="/" element={<Navigate to="about" />} />
-      </Routes>
-    </div>
-  )
+	return (
+		<div>
+			<NavLink to="about">About</NavLink>
+			<NavLink to="hello">Hello</NavLink>
+			<hr />
+			<Routes>
+				<Route path="about" element={<About />} />
+				<Route path="hello" element={<Hello />}>
+					<Route path="news" element={<News />} />
+					<Route path="message" element={<Message />} />
+				</Route>
+				<Route path="/" element={<Navigate to="about" />} />
+			</Routes>
+		</div>
+	);
 }
 ```
+
 使用路由表的嵌套路由：
+
 ```js
 export default [
-    {
-        path: '/about',
-        element: <About />
-    },
-    {
-        path: '/home',
-        element: <Home />,
+	{
+		path: "/about",
+		element: <About />,
+	},
+	{
+		path: "/home",
+		element: <Home />,
 		// 设置二级路由
-        children:[
-            {
-                path:'news',
-                element: <News />
-            },
-            {
-                path:'message',
-                element: <Message />,
+		children: [
+			{
+				path: "news",
+				element: <News />,
+			},
+			{
+				path: "message",
+				element: <Message />,
 				// 设置三级路由
-                children:[
-                    {
-                        path:'detail',
-                        element: <Detail />
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        path: '/',
-        element: <Navigate to='/about' />
-    },
-]
+				children: [
+					{
+						path: "detail",
+						element: <Detail />,
+					},
+				],
+			},
+		],
+	},
+	{
+		path: "/",
+		element: <Navigate to="/about" />,
+	},
+];
 ```
 
-使用时需要通过Outlet来决定嵌套路由的呈现位置
+使用时需要通过 Outlet 来决定嵌套路由的呈现位置
+
 ```js
-import React from 'react'
-import { NavLink,Outlet } from 'react-router-dom'
+import React from "react";
+import { NavLink, Outlet } from "react-router-dom";
 
 export default function Home() {
-    return (
-        <div>
-            <h2>Home组件内容</h2>
-            <div>
-                <ul className="nav nav-tabs">
-                    <li>
-                        <NavLink className="list-group-item" to="news">News</NavLink>
-                    </li>
-                    <li>
-                        <NavLink className="list-group-item" to="message">Message</NavLink>
-                    </li>
-                </ul>
-                {/* 指定路由组件的呈现位置 */}
-                <Outlet />
-            </div>
-        </div>
-    )
+	return (
+		<div>
+			<h2>Home组件内容</h2>
+			<div>
+				<ul className="nav nav-tabs">
+					<li>
+						<NavLink className="list-group-item" to="news">
+							News
+						</NavLink>
+					</li>
+					<li>
+						<NavLink className="list-group-item" to="message">
+							Message
+						</NavLink>
+					</li>
+				</ul>
+				{/* 指定路由组件的呈现位置 */}
+				<Outlet />
+			</div>
+		</div>
+	);
 }
 ```
 
 ### 4.3.6 路由传参
-#### 4.3.6.1 传递params参数
+
+#### 4.3.6.1 传递 params 参数
+
 注册路由时声明 params 参数，和 React Router 5 一样。
+
 ```js
 export default function App() {
-  return (
-    <div>
-      <Routes>
-        <Route path="hello" element={<Hello />}>
-          <Route path="message" element={<Message />}>
-            <Route path="detail/:id/:name/:age" element={<Detail />} />
-          </Route>
-        </Route>
-      </Routes>
-    </div>
-  )
+	return (
+		<div>
+			<Routes>
+				<Route path="hello" element={<Hello />}>
+					<Route path="message" element={<Message />}>
+						<Route path="detail/:id/:name/:age" element={<Detail />} />
+					</Route>
+				</Route>
+			</Routes>
+		</div>
+	);
 }
 ```
+
 传递参数
+
 ```js
 <Link to={`detail/${item.id}/${item.name}/${item.age}`}>{item.name}</Link>
 ```
+
 使用 useParams() 接收 params 参数。useParams() 返回一个参数对象。
+
 ```js
-import React from 'react'
-import { useParams, useMatch } from 'react-router-dom'
+import React from "react";
+import { useParams, useMatch } from "react-router-dom";
 
 export default function Detail() {
-  // 解构赋值
-  const { id, name, age } = useParams()
-  return (
-    <div>
-      <li>id:{id}</li>
-      <li>name:{name}</li>
-      <li>age:{age}</li>
-    </div>
-  )
+	// 解构赋值
+	const { id, name, age } = useParams();
+	return (
+		<div>
+			<li>id:{id}</li>
+			<li>name:{name}</li>
+			<li>age:{age}</li>
+		</div>
+	);
 }
 ```
-这个是最麻烦的，需要在三个地方进行传参，如果不适用路由表，需要首先在App组件内传递参数。使用路由表则是在routes/index.js中传参。
+
+这个是最麻烦的，需要在三个地方进行传参，如果不适用路由表，需要首先在 App 组件内传递参数。使用路由表则是在 routes/index.js 中传参。
 接下来需要在传递的组件中规定传递的参数。最后在接收的组件接收参数。
 
-#### 4.3.6.2 传递search参数
+#### 4.3.6.2 传递 search 参数
+
 传递参数
+
 ```js
-<Link to={`detail?id=${item.id}&name=${item.name}&age=${item.age}`}>{item.name}</Link>
+<Link to={`detail?id=${item.id}&name=${item.name}&age=${item.age}`}>
+	{item.name}
+</Link>
 ```
+
 使用 useSearchParams() 接收参数。该方法返回一个包含两个元素的数组：search 参数和修改 search 参数的方法。
+
 ```js
-import React from 'react'
-import { useSearchParams } from 'react-router-dom'
+import React from "react";
+import { useSearchParams } from "react-router-dom";
 
 export default function Detail() {
-  // 数组的解构赋值
-  const [searchParams, setSearchParams] = useSearchParams()
-  // 需要调用 get() 方法获取对应的参数值
-  const id = searchParams.get('id')
-  const name = searchParams.get('name')
-  const age = searchParams.get('age')
+	// 数组的解构赋值
+	const [searchParams, setSearchParams] = useSearchParams();
+	// 需要调用 get() 方法获取对应的参数值
+	const id = searchParams.get("id");
+	const name = searchParams.get("name");
+	const age = searchParams.get("age");
 
-  function change() {
-    setSearchParams('id=666&name=Lily&age=888')
-  }
+	function change() {
+		setSearchParams("id=666&name=Lily&age=888");
+	}
 
-  return (
-    <div>
-      <li>id:{id}</li>
-      <li>name:{name}</li>
-      <li>age:{age}</li>
-      <button onClick={change}>Change search params</button>
-    </div>
-  )
+	return (
+		<div>
+			<li>id:{id}</li>
+			<li>name:{name}</li>
+			<li>age:{age}</li>
+			<button onClick={change}>Change search params</button>
+		</div>
+	);
 }
 ```
-这种方法会稍微好一点，因为他不需要修改App中或路由表中的内容，只需要对传递和接收的组件进行修改。
-#### 4.3.6.3 传递state参数
-传递state参数比较方便，只需要在link里添加一个state对象就可以了。
+
+这种方法会稍微好一点，因为他不需要修改 App 中或路由表中的内容，只需要对传递和接收的组件进行修改。
+
+#### 4.3.6.3 传递 state 参数
+
+传递 state 参数比较方便，只需要在 link 里添加一个 state 对象就可以了。
+
 ```js
-    return (
-        <div>
-            <ul>
-                {
-                    messages.map((m) => {
-                        return (
-                            <li key={m.id}>
-                                <Link to="detail" state={{
-                                    id: m.id,
-                                    title: m.title,
-                                    content: m.content
-                                }}>{m.title}</Link>
-                                <button onClick={()=> showDetail(m)}>查看详情</button>
-                            </li>
-                        )
-                    })
-                }
-            </ul>
-            <hr />
-            <Outlet />
-        </div>
-    )
+return (
+	<div>
+		<ul>
+			{messages.map((m) => {
+				return (
+					<li key={m.id}>
+						<Link
+							to="detail"
+							state={{
+								id: m.id,
+								title: m.title,
+								content: m.content,
+							}}
+						>
+							{m.title}
+						</Link>
+						<button onClick={() => showDetail(m)}>查看详情</button>
+					</li>
+				);
+			})}
+		</ul>
+		<hr />
+		<Outlet />
+	</div>
+);
 ```
+
 之后在接收端，使用 useLocation() 接收参数。该方法返回路由组件的 location 对象，就是 5 版本路由组件的 location 属性，其中包含 state 参数。
+
 ```js
-import React from 'react'
-import { useLocation } from 'react-router-dom'
+import React from "react";
+import { useLocation } from "react-router-dom";
 
 export default function Detail() {
-    const {state} = useLocation();
-    return (
-        <ul>
-            <li>消息编号：{state.id}</li>
-            <li>消息标题：{state.title}</li>
-            <li>消息内容：{state.content}</li>
-        </ul>
-    )
+	const { state } = useLocation();
+	return (
+		<ul>
+			<li>消息编号：{state.id}</li>
+			<li>消息标题：{state.title}</li>
+			<li>消息内容：{state.content}</li>
+		</ul>
+	);
 }
 ```
+
 ### 4.3.7 编程式路由导航
+
 此处使用了一个完整的例子。useNavigate() 返回一个函数，调用该函数实现编程式路由导航。函数有两种参数传递方式。
 
 第一种方式传递两个参数：路由和相关参数。参数只能设置 replace 和 state。想要传递 params 和 search 参数直接在路由带上。
@@ -731,88 +796,94 @@ export default function Detail() {
 第二种方式传递数字，代表前进或后退几步。
 
 ```js
-import React, { useState } from 'react'
-import { Link, Outlet,useNavigate} from 'react-router-dom'
+import React, { useState } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
 export default function Message() {
-    const navigate = useNavigate()
-    const [messages] = useState([
-        { id: '001', title: '消息1', content: '锄禾日当午' },
-        { id: '002', title: '消息2', content: '汗滴禾下土' },
-        { id: '003', title: '消息3', content: '谁知盘中餐' },
-        { id: '004', title: '消息4', content: '粒粒皆辛苦' }
-    ])
+	const navigate = useNavigate();
+	const [messages] = useState([
+		{ id: "001", title: "消息1", content: "锄禾日当午" },
+		{ id: "002", title: "消息2", content: "汗滴禾下土" },
+		{ id: "003", title: "消息3", content: "谁知盘中餐" },
+		{ id: "004", title: "消息4", content: "粒粒皆辛苦" },
+	]);
 
-    function showDetail(m){
-        navigate('detail',{
-            replace:false,
-            state:{
-                id: m.id,
-                title: m.title,
-                content: m.content
-            }
-        })
-    }
+	function showDetail(m) {
+		navigate("detail", {
+			replace: false,
+			state: {
+				id: m.id,
+				title: m.title,
+				content: m.content,
+			},
+		});
+	}
 
-    return (
-        <div>
-            <ul>
-                {
-                    messages.map((m) => {
-                        return (
-                            <li key={m.id}>
-                                <Link to="detail" state={{
-                                    id: m.id,
-                                    title: m.title,
-                                    content: m.content
-                                }}>{m.title}</Link>
-                                <button onClick={()=> showDetail(m)}>查看详情</button>
-                            </li>
-                        )
-                    })
-                }
-            </ul>
-            <hr />
-            <Outlet />
-        </div>
-    )
+	return (
+		<div>
+			<ul>
+				{messages.map((m) => {
+					return (
+						<li key={m.id}>
+							<Link
+								to="detail"
+								state={{
+									id: m.id,
+									title: m.title,
+									content: m.content,
+								}}
+							>
+								{m.title}
+							</Link>
+							<button onClick={() => showDetail(m)}>查看详情</button>
+						</li>
+					);
+				})}
+			</ul>
+			<hr />
+			<Outlet />
+		</div>
+	);
 }
 ```
+
 这里是使用了给一般组件外带路由组件的属性。并通过绑定鼠标点击事件来给它赋予前进和后退的意义。
+
 ```js
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
-    const navigate = useNavigate();
+	const navigate = useNavigate();
 
-    function back() {
-        navigate(-1);
-    }
+	function back() {
+		navigate(-1);
+	}
 
-    function forward() {
-        navigate(+1);
-
-    }
-    return (
-        <div>
-            <div className="col-xs-offset-2 col-xs-8">
-                <div className="page-header"><h2>React Router Demo</h2></div>
-            </div>
-            <button onClick={back}>←后退</button>
-            <button onClick={forward}>前进→</button>
-        </div>
-
-    )
+	function forward() {
+		navigate(+1);
+	}
+	return (
+		<div>
+			<div className="col-xs-offset-2 col-xs-8">
+				<div className="page-header">
+					<h2>React Router Demo</h2>
+				</div>
+			</div>
+			<button onClick={back}>←后退</button>
+			<button onClick={forward}>前进→</button>
+		</div>
+	);
 }
-
 ```
 
-### 4.3.8 其他HOOK
+### 4.3.8 其他 HOOK
+
 **useMatch()**
 返回路由组件的 match 数据，即 5 版本中的 match 属性。
 
 必须传入该组件对应的路由规则才能正确返回，否则返回 null。
+
 ```JS
 // Detail.jsx
 import { useParams, useMatch } from 'react-router-dom'
@@ -834,6 +905,7 @@ pathnameBase: "/hello/message/detail/1/Bruce/33"
 pattern: {path: 'hello/message/detail/:id/:name/:age', caseSensitive: false, end: true}
 */
 ```
+
 **useInRouterContext()**
 如果组件在`<Router>`的上下文中呈现，则 useInRouterContext 钩子返回 true，否则返回 false。即组件有没有被包裹在`<BrowserRouter>`这种东西里面。这个对第三方组件库有用处。
 
@@ -846,14 +918,17 @@ POP 是指在浏览器中直接打开了这个路由组件（刷新页面）。
 
 **useOutlet()**
 用来呈现当前组件中渲染的嵌套路由。
+
 ```JS
 const result = useOutlet()
 console.log(result)
 // 如果嵌套路由没有挂载,则返回 null
 // 如果嵌套路由已经挂载,则展示嵌套的路由对象
 ```
+
 **useResolvedPath()**
 给定一个 URL 值，解析其中的：path、search、hash 值。
+
 ```JS
 const res = useResolvedPath('/user?id=001&name=Bruce#React')
 console.log(res)
@@ -865,43 +940,57 @@ search: '?id=001&name=Bruce'
 */
 ```
 
-# 五、React UI组件库
+# 五、React UI 组件库
+
 ## 5.1 material-ui
+
 官网：http://www.material-ui.com
+
 ## 5.2 ant-design
+
 官网：https://ant.design/index-cn
 
-## 5.3 使用antd
+## 5.3 使用 antd
+
 下载`npm i antd`
 感觉具体用法直接看官方文档用就完事了
 
-要是需要暴露脚手架内容从而引用需要的antd样式。需要先使用eject将脚手架暴露，之后通过`react-app-rewired`和`customize-cra`来修改文件。
+要是需要暴露脚手架内容从而引用需要的 antd 样式。需要先使用 eject 将脚手架暴露，之后通过`react-app-rewired`和`customize-cra`来修改文件。
 具体内容看官方文档吧
 
 并且可以自定义主题
 
 # 六、redux
-## 6.1 redux理解
+
+## 6.1 redux 理解
+
 官方文档：https://redux.js.org/
 中文文档：http://www.redux.org.cn/
-### 6.1.1 redux是什么
-1. redux是一个专门用于做**状态管理**的js库(不是react插件库)
-2. 可以在react、angular、vue等项目中，但基本使用与react中
-3. 作用：集中式管理react应用中多个组件共享的状态
 
-### 6.1.2 什么情况下需要使用redux
+### 6.1.1 redux 是什么
+
+1. redux 是一个专门用于做**状态管理**的 js 库(不是 react 插件库)
+2. 可以在 react、angular、vue 等项目中，但基本使用与 react 中
+3. 作用：集中式管理 react 应用中多个组件共享的状态
+
+### 6.1.2 什么情况下需要使用 redux
+
 1. 某个组件的状态，需要让其他组件可以随时拿到(共享)
 2. 一个组件需要改变另一个组件的状态(通信)
 3. 总体原则：能不用就不用，如果不用比较吃力才考虑使用
 
 ## 6.2 工作流程
+
 ![redux](./../img/redux原理图.png)
-## 6.3 redux使用
+
+## 6.3 redux 使用
+
 下载：`npm install --save redux`
-现在官方推荐使用Redux Toolkit使用redux
+现在官方推荐使用 Redux Toolkit 使用 redux
 官方文档：https://redux-toolkit.js.org/
 下载方式：`npm install @reduxjs/toolkit`
-或者可以使用 React 和 Redux 启动新应用程序的推荐方法是使用官方 Redux+JS 模板或Redux+TS 模板来创建 React App，它利用了Redux Toolkit和 React Redux 与 React 组件的集成。
+或者可以使用 React 和 Redux 启动新应用程序的推荐方法是使用官方 Redux+JS 模板或 Redux+TS 模板来创建 React App，它利用了 Redux Toolkit 和 React Redux 与 React 组件的集成。
+
 ```
 # Redux + Plain JS template
 npx create-react-app my-app --template redux
@@ -911,49 +1000,514 @@ npx create-react-app my-app --template redux-typescript
 ```
 
 # 七、 项目打包
-首先执行`npm run build`，此时会生成一个build目录
-可以通过node或者js放到服务器上打包
-或者通过serve库来打包项目`npm i serve -g`。其的作用就是快速开启一台服务器
+
+首先执行`npm run build`，此时会生成一个 build 目录
+可以通过 node 或者 js 放到服务器上打包
+或者通过 serve 库来打包项目`npm i serve -g`。其的作用就是快速开启一台服务器
 之后执行命令`serve build`来快速上线一个项目。当然这只是本地的一种简易方法，真实部署项目还是需要通过正经途径来滴。
 
-# 八、react扩展内容
-## 8.1 setState的两种方式
+# 八、react 扩展内容
+
+## 8.1 setState 的两种方式
+
+```js
+import React, { Component } from "react";
+
+export default class Count extends Component {
+	state = { count: 0 };
+	add = () => {
+		const { count } = this.state;
+
+		// 对象式的setState
+		// this.setState({count: count + 1},()=>{
+		//     console.log(this.state.count);
+		// });
+
+		// 函数式的setState
+		this.setState((state, props) => {
+			return { count: state.count + 1 };
+		});
+	};
+	render() {
+		return (
+			<div>
+				<h1>当前求和为：{this.state.count}</h1>
+				<button onClick={this.add}>点我加一</button>
+			</div>
+		);
+	}
+}
+```
+
+1. `setState(stateChange,[callback])`————对象式的 setState
+   1. stateChange 为状态改变对象（该对象可以体现出状态的更改）
+   2. callback 是可选的回调函数，它在状态更新完毕，界面也更新后（render 调用后）才被调用
+   3. 因为 setState 是异步的，所以如果想在外部查看最新的值可能会失败，所以说如果想要查看最新的值或者进行什么操作应该写在回调函数里
+2. `setState(updater,[callback])`————函数式的 setState
+   1. updater 为返回 stateChange 对象的函数
+   2. updater 可以接收到 state 和 props
+   3. callback 是可选的回调函数，它在状态更新、界面更新后才被调用
+3. 总结：
+   1. 对象式的 setState 是函数式的 setState 的简写方式（语法糖）
+   2. 如果新状态不依赖于原状态=>使用对象方式
+   3. 如果新状态依赖于原状态=>使用函数方式
+
+## 8.2 lazyLoad
+
+```js
+import React, { lazy } from "react";
+// import About from '../pages/About'
+// import Home from '../pages/Home'
+import { Navigate } from "react-router-dom";
+
+const Home = lazy(() => import("../pages/Home"));
+const About = lazy(() => import("../pages/About"));
+```
+
+通过引入 lazy 函数来实现懒加载。需要抛弃以前的引入形式，因为如果直接用 import 引入的话，就会直接加载咧。
+所以要懒加载的话，需要通过 lazy 函数来调用加载。
+调用懒加载的话，就需要指定一个 fallback 来指定当懒加载没有加载完毕时的**等待组件或函数等**
+
+```js
+import React, { Suspense } from "react";
+import { NavLink, useRoutes } from "react-router-dom";
+import routes from "./routes";
+
+<div className="panel-body">
+	{/* 注册路由 */}
+	<Suspense fallback={<h1>Loading</h1>}>{element}</Suspense>
+</div>;
+```
+
+所以需要引入 Suspense 并通过其包裹注册路由的地方，给其加入 fallback 函数。
+当然这个地方的函数可以是一个组件，也可以就是一个标签。
+但是如果这里是一个组件的话，这个组件**不能够使用懒加载**，必须使用 import 进行引入
+
+## 8.3 Hooks
+
+1. Hook 是 React 16.8 版本增加的新特性/新语法
+2. 可以让你在函数组件中使用 state 以及其他的 React 组件
+3. 正是因为 Hook 的存在，所以说现在 React 更推荐使用函数式组件来进行编程
+
+### 8.3.1 State Hook
+
+1. State Hook 让函数组件也可以有 state 状态，并进行状态数据的读写操作
+2. 语法： `const[value,setValue] = React.useState(initValue)`
+3. useState()说明：
+   1. 参数：第一次初始化指定的值在内部作缓存
+   2. 返回值：包含 2 个元素的数组，第一个为内部当前状态值，第二个为更新状态的函数
+4. setValue()的两种写法：
+   1. setValue(newValue):参数为非函数值，直接指定新的状态值，内部用其覆盖原来的状态值
+   2. setValue(value => newValue):参数为函数，接收原本的状态值，返回新的状态值，内部用其覆盖原来的状态值
+
+### 8.3.2 Effect Hook
+
+1. Effect Hook 可以让你在函数组件中执行副作用操作（用于模拟类组件中的生命周期钩子）
+2. React 中的副作用操作：
+   1. 发送 ajax 请求
+   2. 设置订阅、启动定时器
+   3. 手动更改真实 dom
+3. 语法和说明：
+
+```js
+useEffect(() => {
+	// 在此可以执行任何带副作用操作
+	return () => {
+		// 在组件卸载前执行
+		// 在此做一些收尾工作，比如清除定时器/取消订阅等
+	};
+}, []); //如果指定的是[]，回调函数只会在第一次render()后执行
+```
+
+4. 可以把 useEffect Hook 看做如下三个函数的组合：
+   1. componentDidMount()
+   2. componentDidUpdate()
+   3. componentWillUnmount()
+
+需要注意的是，在 react18 中，传统的卸载组件方式已经被弃用了，取而代之的是`unmount()`。
+但是因为 react18 中，渲染方式也被重写了，所以需要注意一些地方。
+
+```js
+// 从 react-dom/client 引入 ReactDOM
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+
+// React 18 的语法发生改变了
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+root.render(<App />);
+
+export default root;
+```
+
+首先需要将定义的 root 暴露出去，这样才能进行调用并卸载。
+之后在需要进行卸载的地方，通过引入`index.js`并且调用`root.unmount()`来卸载组件
+
+### 8.3.3 Ref Hook
+
+1. Ref Hook 可以在函数组件中存储/查找组件内的标签或任意其他数据
+2. 语法：`const myRef = React.useRef()`
+3. 作用：保存标签对象，功能与`React.createRef()`一样
+
+### 8.3.4 示例
+
+```js
+import React from "react";
+import root from "./index";
+
+export default function App() {
+	const [count, setCount] = React.useState(0);
+
+	const myRef = React.useRef();
+
+	React.useEffect(() => {
+		let timer = setInterval(() => {
+			setCount((count) => count + 1);
+		}, 1000);
+		return () => {
+			clearInterval(timer);
+		};
+	}, []);
+
+	function add() {
+		// setCount(count+1);
+		setCount((count) => count + 1);
+	}
+
+	function show() {
+		alert(myRef.current.value);
+	}
+
+	function remove() {
+		root.unmount();
+	}
+	return (
+		<div>
+			<input type="text" ref={myRef} />
+			<h2>当前求和为：{count}</h2>
+			<button onClick={add}>点我+1</button>
+			<button onClick={remove}>点我卸载</button>
+			<button onClick={show}>点我提示数据</button>
+		</div>
+	);
+}
+```
+
+## 8.4 Fragment
+
+React 中的一个常见模式是一个组件返回多个元素。Fragments 允许你将子列表分组，而无需向 DOM 添加额外节点。
+
+```js
+class Columns extends React.Component {
+	render() {
+		return (
+			<React.Fragment>
+				<td>Hello</td>
+				<td>World</td>
+			</React.Fragment>
+		);
+	}
+}
+```
+
+通过 Fragments 能够正确的生成节点
+
+```html
+<table>
+	<tr>
+		<td>Hello</td>
+		<td>World</td>
+	</tr>
+</table>
+```
+
+可以像使用其他任意元素一样使用 <> </>，但它并不支持 key 或属性。
+
+```js
+class Columns extends React.Component {
+	render() {
+		return (
+			<>
+				<td>Hello</td>
+				<td>World</td>
+			</>
+		);
+	}
+}
+```
+
+**Fragments 可以传递 key。**
+
+```js
+function Glossary(props) {
+	return (
+		<dl>
+			{props.items.map((item) => (
+				// 没有`key`，React 会发出一个关键警告
+				<React.Fragment key={item.id}>
+					<dt>{item.term}</dt>
+					<dd>{item.description}</dd>
+				</React.Fragment>
+			))}
+		</dl>
+	);
+}
+```
+
+## 8.5 Context
+
+一种组件间通信方式，常用于【祖组件】和【后代组件】间通信
+
+```js
+import React, { Component } from "react";
+import "./index.css";
+
+const MyContext = React.createContext();
+const { Provider, Consumer } = MyContext;
+export default class A extends Component {
+	state = { username: "tom", age: 18 };
+
+	render() {
+		const { username, age } = this.state;
+		return (
+			<div className="parent">
+				<h3>我是A组件</h3>
+				<h4>我的用户名是：{username}</h4>
+				<Provider value={{ username, age }}>
+					<B />
+				</Provider>
+			</div>
+		);
+	}
+}
+
+class B extends Component {
+	render() {
+		return (
+			<div className="child">
+				<h3>我是B组件</h3>
+				<h4>我的用户名是：</h4>
+				<C />
+			</div>
+		);
+	}
+}
+
+// class C extends Component {
+//     static contextType = MyContext;
+//     render() {
+//         return (
+//             <div className="grand">
+//             <h3>我是C组件</h3>
+//             <h4>我的用户名是：{this.context}</h4>
+//         </div>
+//         )
+//     }
+// }
+
+function C() {
+	return (
+		<div className="grand">
+			<h3>我是C组件</h3>
+			<h4>
+				我的用户名是：
+				<Consumer>{(value) => `${value.username}年龄是${value.age}`}</Consumer>
+			</h4>
+		</div>
+	);
+}
+```
+
+使用：
+
+1. 创建 Context 容器：`const xxxContext = React.createContext()`
+2. 渲染子组件时，外面包裹 XXXContext.Provider,通过 value 属性给后代组件传递数据：
+
+```js
+<Provider value={{ username, age }}>
+	<B />
+</Provider>
+```
+3. 后代组件读取数据：
+```js
+// 第一种：仅适用于类组件
+static contextType = MyContext; //声明接收context
+this.context //读取context中的value数据
+
+//第二种：函数组件和类式组件都可以
+<xxxContext.Consumer>
+    {
+        value =>{   //value就是context中的value数据
+            要显示的内容
+        }
+    }
+</xxxContext.Consumer>
+```
+
+**在实际开发中，一般不用context，因为redux可以更好的替代它**
+
+## 8.6 组件优化
+问题：
+
+- 只要调用`setState()`，即使没有修改状态，组件也会重新`render()`
+- 只要父组件重新渲染，即使子组件没有使用父组件的状态，也会重新`render()`
+
+原因：
+- `shouldComponentUpdate()`钩子默认总是返回 true
+
+改进：
+- 只有组件的`state`或`props`的数据发生改变时才重新渲染
+
+方式：
+- 手动重写`shouldComponentUpdate(nextProps, nextState)`的逻辑，只有数据发生改变才返回`true`
+- 使用`PureComponent`，它重写了`shouldComponentUpdate()`， 只有`state`或`props`数据有变化才返回`true`
+
+```js
+import React, { PureComponent } from 'react'
+
+class Demo extends PureComponent {
+  addStu = () => {
+    // 不会渲染
+    const { stus } = this.state
+    stus.unshift('小刘')
+    this.setState({ stus })
+
+    // 重新渲染
+    const { stus } = this.state
+    this.setState({ stus: ['小刘', ...stus] })
+  }
+}
+
+```
+- 它只是进行`state`和`props`数据的浅比较, 如果只是数据对象内部数据变了, 返回`false`。即对于引用数据类型，比较的是地址引用
+- 不要直接修改`state`数据, 而是要产生新数据
+
+## 8.7 render props(插槽)
+React中向组件内部动态传入带内容的结构（即标签或组件）
+1. 使用`children props`：通过组件标签体传入结构
+2. 使用`render props`：通过组件标签属性传入结构，可携带数据
+### 8.7.1 children props方式
+组件标签体内容会存储到`this.props.children`中
+缺点：A 组件无法向 B 组件传递数据
 ```js
 import React, { Component } from 'react'
 
-export default class Count extends Component {
-    state = {count: 0};
-    add = () => {
-        const {count} = this.state;
+export default class Parent extends Component {
+  render() {
+    return (
+      <div>
+        <h3>Parent组件</h3>
+        <A>
+          <B />
+        </A>
+      </div>
+    )
+  }
+}
 
-        // 对象式的setState
-        // this.setState({count: count + 1},()=>{
-        //     console.log(this.state.count);
-        // });
+class A extends Component {
+  state = { name: 'tom' }
+  render() {
+    return (
+      <div>
+        <h3>A组件</h3>
+        {this.props.children}
+      </div>
+    )
+  }
+}
 
-        // 函数式的setState
-        this.setState((state,props)=>{
-            return {count : state.count +1}
-        })
-    }
-    render() {
-        return (
-            <div>
-                <h1>当前求和为：{this.state.count}</h1>
-                <button onClick = {this.add}>点我加一</button>
-            </div>
-        )}
+class B extends Component {
+  render() {
+    return (
+      <div>
+        <h3>B组件</h3>
+      </div>
+    )
+  }
 }
 ```
-1. `setState(stateChange,[callback])`————对象式的setState
-   1. stateChange为状态改变对象（该对象可以体现出状态的更改）
-   2. callback是可选的回调函数，它在状态更新完毕，界面也更新后（render调用后）才被调用
-   3. 因为setState是异步的，所以如果想在外部查看最新的值可能会失败，所以说如果想要查看最新的值或者进行什么操作应该写在回调函数里
-2. `setState(updater,[callback])`————函数式的setState
-   1. updater为返回stateChange对象的函数
-   2. updater可以接收到state和props
-   3. callback是可选的回调函数，它在状态更新、界面更新后才被调用
-3. 总结：
-   1. 对象式的setState是函数式的setState的简写方式（语法糖）
-   2. 如果新状态不依赖于原状态=>使用对象方式
-   3. 如果新状态依赖于原状态=>使用函数方式
+
+### 8.7.2 render props方式
+- `<A render={(name) => <B name={name} />} />`
+- `{this.props.render(name)}`
+```js
+import React, { Component } from 'react'
+
+export default class Parent extends Component {
+  render() {
+    return (
+      <div>
+        <h3>Parent组件</h3>
+        <A render={(name) => <B name={name} />} />
+      </div>
+    )
+  }
+}
+
+class A extends Component {
+  state = { name: 'tom' }
+  render() {
+    const { name } = this.state
+    return (
+      <div>
+        <h3>A组件</h3>
+        {this.props.render(name)}
+      </div>
+    )
+  }
+}
+
+class B extends Component {
+  render() {
+    return (
+      <div>
+        <h3>B组件,{this.props.name}</h3>
+      </div>
+    )
+  }
+}
+```
+## 8.8 错误边界
+错误边界(Error boundary)：用来捕获后代组件错误，渲染出备用页面。
+**注意：只在生产环境（项目上线）起效**
+
+特点：
+- 只能捕获后代组件生命周期产生的错误，不能捕获自己组件产生的错误和其他组件在合成事件、定时器中产生的错误
+- 简单理解就是只能捕获后代组件生命周期钩子里面代码的错误
+
+```js
+import React, { Component } from 'react'
+import Child from './Child'
+
+export default class Parent extends Component {
+  state = {
+    //用于标识子组件是否产生错误
+    hasError: '',
+  }
+
+  // 当子组件出现错误，会触发调用，并携带错误信息
+  static getDerivedStateFromError(error) {
+    // render 之前触发
+    // 返回新的 state
+    return { hasError: error }
+  }
+
+  // 子组件产生错误时调用该钩子
+  componentDidCatch(error, info) {
+    console.log(error, info)
+    console.log('此处统计错误，反馈给服务器')
+  }
+
+  render() {
+    return (
+      <div>
+        <h2>Parent组件</h2>
+        {this.state.hasError ? <h2>网络不稳定，稍后再试</h2> : <Child />}
+      </div>
+    )
+  }
+}
+```
